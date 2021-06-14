@@ -4,7 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 
-class Story {
+public class Story {
 
     private LinkedList<String> story = new LinkedList<>();
 

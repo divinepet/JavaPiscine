@@ -9,7 +9,11 @@ import java.io.*;
 import java.net.*;
 import java.sql.SQLException;
 
-class ServerSomthing extends Thread {
+import static edu.school21.sockets.app.Main.story;
+import static edu.school21.sockets.app.Main.serverList;
+
+
+public class ServerSomthing extends Thread {
 
     private Socket socket;
     private BufferedReader in;
@@ -24,8 +28,8 @@ class ServerSomthing extends Thread {
         this.socket = socket;
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        Server.story.printStory(out);
         welcome();
+        story.printStory(out);
         start();
     }
 
@@ -46,8 +50,8 @@ class ServerSomthing extends Thread {
                         break;
                     }
                     System.out.println("Echoing: " + word);
-                    Server.story.addStoryEl(word);
-                    for (ServerSomthing vr : Server.serverList) {
+                    story.addStoryEl(word);
+                    for (ServerSomthing vr : serverList) {
                         vr.send(word);
                     }
                 }
@@ -134,9 +138,9 @@ class ServerSomthing extends Thread {
                 socket.close();
                 in.close();
                 out.close();
-                for (ServerSomthing vr : Server.serverList) {
+                for (ServerSomthing vr : serverList) {
                     if(vr.equals(this)) vr.interrupt();
-                    Server.serverList.remove(this);
+                    serverList.remove(this);
                 }
             }
         } catch (IOException ignored) {}

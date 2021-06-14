@@ -9,8 +9,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 @Configuration
 @ComponentScan("edu.school21.sockets")
@@ -32,8 +36,11 @@ public class SocketsApplicationConfig {
         ds.setUsername(user);
         ds.setPassword(password);
         ds.setDriverClassName(driverName);
+        Statement st = ds.getConnection().createStatement();
+        st.execute(new String(Files.readAllBytes(Paths.get("./src/main/resources/mydb.sql"))));
         return ds;
     }
+
 
     @Bean
     public PasswordEncoder encodePassword() {

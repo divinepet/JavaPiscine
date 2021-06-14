@@ -67,7 +67,13 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>RELEASE</version>
+            <version>1.18.20</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>5.3.8</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -93,7 +99,7 @@
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                             <addClasspath>true</addClasspath>
-                            <mainClass>edu.school21.sockets.app.Server</mainClass>
+                            <mainClass>edu.school21.sockets.app.Main</mainClass>
                         </manifest>
                         <manifestEntries>
                             <mode>development</mode>

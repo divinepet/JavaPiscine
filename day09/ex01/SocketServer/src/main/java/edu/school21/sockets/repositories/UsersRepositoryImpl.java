@@ -31,8 +31,6 @@ public class UsersRepositoryImpl extends JdbcTemplate implements UsersRepository
         };
     }
 
-
-
     @Override
     public Optional<User> findById(Long id)  {
         try {

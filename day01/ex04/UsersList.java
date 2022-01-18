@@ -3,5 +3,4 @@ interface UsersList {
     User getById(int id) throws UserNotFoundException;
     User getByIndex(int index);
     int getNumberOfUsers();
-
 }

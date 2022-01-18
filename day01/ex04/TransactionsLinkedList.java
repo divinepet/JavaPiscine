@@ -68,8 +68,7 @@ public class TransactionsLinkedList implements TransactionsList {
     }
 
     @Override
-    public Transaction[] toArray()
-    {
+    public Transaction[] toArray() {
         Node copy_head = first;
         int size = size();
         int i = 0;

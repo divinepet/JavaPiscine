@@ -1,54 +1,78 @@
+import java.util.UUID;
+
+
 public class TransactionsService {
     UsersList list;
-    TransactionsLinkedList translist;
+    TransactionsLinkedList successTransactionsList;
+    TransactionsLinkedList unpairedTransactionsList;
 
     TransactionsService() {
         this.list = new UsersArrayList();
-        this.translist = new TransactionsLinkedList();
+        this.successTransactionsList = new TransactionsLinkedList();
+        this.unpairedTransactionsList = new TransactionsLinkedList();
     }
 
-    public void addNewUser(String name, Integer transferAmount) {
-        this.list.add(new User(name, transferAmount));
+    public void addNewUser(User user) {
+        list.add(user);
     }
 
     public int getUserBalance(int id) throws UserNotFoundException {
         return list.getById(id).getBalance();
-
     }
 
-    public void outcomeTransaction(int id1, int id2, int transferAmount) throws UserNotFoundException {
-        Transaction transaction = new Transaction(list.getById(id1), list.getById(id2), transferAmount);
-        translist.add(transaction);
-        int balanceSender = list.getById(id1).getBalance();
-        int balanceRecipient = list.getById(id2).getBalance();
-        if ((balanceSender - transferAmount) >= 0) {
-            list.getById(id1).setBalance(balanceSender - transferAmount);
-            incomeTransaction(id1, id2, transferAmount, transaction);
+    public void transfer(int senderId, int recipientId, int transferAmount) throws Transaction.IllegalTransactionException, UserNotFoundException {
+        String transactionId = UUID.randomUUID().toString();
+
+        Transaction transaction = new Transaction(list.getById(senderId), list.getById(recipientId), Transaction.TransactionType.DEBIT, transferAmount, transactionId);
+        try {
+            transaction.start();
+            successTransactionsList.add(transaction);
+        } catch (Transaction.IllegalTransactionException e) {
+            unpairedTransactionsList.add(transaction);
         }
     }
 
-    private void incomeTransaction(int id1, int id2, int transferAmount, Transaction tr) throws UserNotFoundException {
-        Transaction transactionOutcome = new Transaction(list.getById(id1), list.getById(id2), tr.getIdentifier(), transferAmount);
-        translist.add(transactionOutcome);
-        list.getById(id2).setBalance(list.getById(id2).getBalance() + transferAmount);
-    }
-
-    public void getTransactionsList() {
-        Transaction[] array = translist.toArray();
-        for (Transaction item : array)
-            System.out.println(item.getFullInfo());
-    }
-    public String[] getUsers()
-    {
-        int size = list.getNumberOfUsers();
-        String[] usersArray = new String[size];
-        for (int i = 0; i < usersArray.length; i++)
-        {
-            User user = list.getByIndex(i);
-            usersArray[i] = user.getName();
-            System.out.println(user.getName());
+    public Transaction[] getUserTransactionsList(int id) {
+        Transaction[] success = successTransactionsList.toArray();
+        Transaction[] failed = unpairedTransactionsList.toArray();
+        TransactionsLinkedList transactionsLinkedList = new TransactionsLinkedList();
+        for (int i = 0; i < success.length; i++) {
+            if (success[i].getSender().getId() == id || success[i].getRecipient().getId() == id) {
+                transactionsLinkedList.add(success[i]);
+            }
         }
 
-        return usersArray;
+        for (int i = 0; i < failed.length; i++) {
+            if (failed[i].getSender().getId() == id || failed[i].getRecipient().getId() == id) {
+                transactionsLinkedList.add(failed[i]);
+            }
+        }
+        return transactionsLinkedList.toArray();
     }
+
+    public void removeUserTransactions(String transactionId, int userId) {
+        Transaction[] success = successTransactionsList.toArray();
+        Transaction[] failed = unpairedTransactionsList.toArray();
+
+
+
+        for (int i = 0; i < success.length; i++) {
+            if ((success[i].getSender().getId() == userId || success[i].getRecipient().getId() == userId)
+            && success[i].getIdentifier().equals(transactionId)) {
+                successTransactionsList.remove(success[i].getIdentifier());
+            }
+        }
+
+        for (int i = 0; i < failed.length; i++) {
+            if ((failed[i].getSender().getId() == userId || failed[i].getRecipient().getId() == userId)
+                    && failed[i].getIdentifier().equals(transactionId)) {
+                unpairedTransactionsList.remove(failed[i].getIdentifier());
+            }
+        }
+    }
+
+    public Transaction[] getUnpairedTransactionsList() {
+        return unpairedTransactionsList.toArray();
+    }
+
 }

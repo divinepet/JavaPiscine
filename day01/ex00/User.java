@@ -9,18 +9,8 @@ public class User {
         this.balance = balance;
     }
 
-    public void setBalance(Integer balance)
-    {
-        if (balance > 0)
-            this.balance += balance;
-        else
-        {
-            balance *= -1;
-            if (this.balance - balance < 0)
-                System.out.println("Not enough money!");
-            else
-                this.balance -= balance;
-        }
+    public void setBalance(Integer balance) {
+        this.balance += balance;
     }
 
     public int getBalance()

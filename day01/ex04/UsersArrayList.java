@@ -1,5 +1,5 @@
 public class UsersArrayList implements UsersList {
-    private User array[];
+    private User[] array;
 
     UsersArrayList() {
         this.array = new User[10];
@@ -50,12 +50,11 @@ public class UsersArrayList implements UsersList {
 }
 
 class UserNotFoundException extends Exception {
-    private int number;
-    public int getNumber() {
-        return number;
-    }
-    UserNotFoundException(int id)
-    {
+    UserNotFoundException(int id) {
         System.out.println("User with ID " + id + " doesn't exist");
+    }
+
+    UserNotFoundException() {
+        System.out.println("User doesn't exist");
     }
 }

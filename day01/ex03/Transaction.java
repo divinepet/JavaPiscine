@@ -1,21 +1,26 @@
 import java.util.UUID;
 
 public class Transaction {
+
+    static enum TransactionType {
+        DEBIT,
+        CREDIT
+    }
+
     String identifier = UUID.randomUUID().toString();
     User recipient;
     User sender;
-    Integer isDebit;
+    TransactionType transactionType;
     Integer transferAmount;
-    Integer startBalance;
 
-    Transaction (User recipient, User sender, Integer isDebit, Integer transferAmount) {
-        this.startBalance = sender.getBalance();
+    Transaction (User recipient, User sender, TransactionType transactionType, Integer transferAmount) {
         this.recipient = recipient;
         this.sender = sender;
-        this.sender.setBalance(transferAmount * (-1));
-        if (this.sender.getBalance() != startBalance)
-            this.recipient.setBalance(transferAmount);
-        this.isDebit = isDebit;
+        if (sender.getBalance() >= transferAmount) {
+            sender.setBalance(transferAmount * (-1));
+            recipient.setBalance(transferAmount);
+        }
+        this.transactionType = transactionType;
         this.transferAmount = transferAmount;
     }
 
@@ -23,21 +28,36 @@ public class Transaction {
         return identifier;
     }
 
+    public User getRecipient() {
+        return recipient;
+    }
+
+    public User getSender() {
+        return sender;
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "identifier='" + identifier + '\'' +
+                ", recipient=" + recipient +
+                ", sender=" + sender +
+                ", transactionType=" + transactionType +
+                ", transferAmount=" + transferAmount +
+                ", startBalance=" + startBalance +
+                '}';
+    }
+
+    public TransactionType getTransactionType() {
+        return transactionType;
+    }
+
     public Integer getTransferAmount() {
         return transferAmount;
     }
 
-    public String getRecipient() {
-        return recipient.getName();
-    }
-
-    public String getSender() {
-        return sender.getName();
-    }
-
-    public String getFullInfo()
-    {
-        return getSender() + " -> " + getRecipient() + ", " + getTransferAmount() + "$, ID: " + getIdentifier();
+    public Integer getStartBalance() {
+        return startBalance;
     }
 }
 

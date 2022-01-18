@@ -46,10 +46,6 @@ public class UsersArrayList implements UsersList {
 }
 
 class UserNotFoundException extends Exception {
-    private int number;
-    public int getNumber() {
-        return number;
-    }
     UserNotFoundException(int id)
     {
         System.out.println("User with ID " + id + " doesn't exist");

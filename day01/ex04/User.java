@@ -9,9 +9,8 @@ public class User {
         this.balance = balance;
     }
 
-    public void setBalance(Integer balance)
-    {
-        this.balance = balance;
+    public void setBalance(Integer balance) {
+        this.balance += balance;
     }
 
     public int getBalance()

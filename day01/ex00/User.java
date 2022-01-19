@@ -9,6 +9,7 @@ public class User {
         this.balance = balance;
     }
 
+<<<<<<< HEAD
     public void setBalance(Integer balance)
     {
         if (balance > 0)
@@ -20,6 +21,10 @@ public class User {
             else
                 this.balance -= balance;
         }
+=======
+    public void setBalance(Integer balance) {
+        this.balance += balance;
+>>>>>>> f926bb0f0175de7bf11f2e5fd668469dd3037222
     }
 
     public int getBalance()

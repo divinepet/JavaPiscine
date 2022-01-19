@@ -1,55 +1,78 @@
 import java.util.UUID;
 
 public class Transaction {
-    String identifier;
-    User recipient;
-    User sender;
-    transactionType type;
-    enum transactionType {
-      INCOME,
-      OUTCOME,
-    };
-    Integer transferAmount;
-    Integer startBalance;
 
-    Transaction (User sender, User recipient, Integer transferAmount) {
-        this.recipient = recipient;
-        this.sender = sender;
-        this.transferAmount = transferAmount;
-        this.identifier = UUID.randomUUID().toString();
-        this.type = transactionType.OUTCOME;
+    public static enum TransactionType {
+        DEBIT,
+        CREDIT
     }
 
-    Transaction (User sender, User recipient, String identifier, Integer transferAmount) {
-        this.recipient = recipient;
+    private String identifier;
+    private User recipient;
+    private User sender;
+    private TransactionType transactionType;
+    private Integer transferAmount;
+
+    public Transaction (User sender, User recipient, TransactionType transactionType, Integer transferAmount) {
         this.sender = sender;
+        this.recipient = recipient;
+        this.identifier = UUID.randomUUID().toString();
+        this.transactionType = transactionType;
         this.transferAmount = transferAmount;
+    }
+
+    public Transaction (User sender, User recipient, TransactionType transactionType, Integer transferAmount, String identifier) {
+        this.sender = sender;
+        this.recipient = recipient;
         this.identifier = identifier;
-        this.type = transactionType.INCOME;
+        this.transactionType = transactionType;
+        this.transferAmount = transferAmount;
+    }
+
+    public void start() throws IllegalTransactionException {
+        if (sender.getBalance() >= transferAmount) {
+            sender.setBalance(transferAmount * (-1));
+            recipient.setBalance(transferAmount);
+        } else
+            throw new IllegalTransactionException(this.identifier);
     }
 
     public String getIdentifier() {
         return identifier;
     }
 
+    public User getRecipient() {
+        return recipient;
+    }
+
+    public User getSender() {
+        return sender;
+    }
+
+    public TransactionType getTransactionType() {
+        return transactionType;
+    }
+
     public Integer getTransferAmount() {
         return transferAmount;
     }
 
-    public String getRecipient() {
-        return recipient.getName();
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "identifier='" + identifier + '\'' +
+                ", recipient=" + recipient +
+                ", sender=" + sender +
+                ", transactionType=" + transactionType +
+                ", transferAmount=" + transferAmount +
+                '}';
     }
 
-    public String getSender() {
-        return sender.getName();
-    }
-
-    public String getFullInfo()
-    {
-        if (type == transactionType.OUTCOME)
-            return getSender() + " -> " + getRecipient() + ", " + getTransferAmount() + ", " + type + ", ID: " + getIdentifier();
-        else
-            return getRecipient() + " <- " + getSender() + ", " + getTransferAmount() + ", " + type + ", ID: " + getIdentifier();
+    class IllegalTransactionException extends Exception {
+        IllegalTransactionException(String id)
+        {
+                System.out.println("Transaction " + id + " can't be done");
+        }
     }
 }
 

@@ -13,8 +13,7 @@ public class User {
     {
         if (balance > 0)
             this.balance += balance;
-        else
-        {
+        else {
             balance *= -1;
             if (this.balance - balance < 0)
                 System.out.println("Not enough money!");

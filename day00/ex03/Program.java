@@ -14,43 +14,38 @@ public class Program {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int weekIterator = 1;
-        int i = 0;
         long min = 0;
-        int local = 0;
-        while (i++ < 18)
-        {
-            String week = sc.next();
-            if (week.equals("42")) {
-                i -= 1;
+        int weekDayNum = 1;
+        int local;
+
+        for (; weekDayNum <= 18; weekDayNum++) {
+            String weekDay = sc.next();
+            if (weekDay.equals("42"))
                 break;
-            }
-            int weekDay = sc.nextInt();
-            if (weekDay != i) {
-                System.out.println("IllegalArgument");
+            int tmpWeekDay = sc.nextInt();
+            if (!(weekDay + " " + tmpWeekDay).equals("Week " + weekDayNum)) {
+                System.err.println("IllegalArgument");
                 System.exit(-1);
             }
             local = 10;
-            for (int k = 0; k < 5; k++)
-            {
+            for (int k = 0; k < 5; k++) {
                 int tmp = sc.nextInt();
                 if (tmp < local)
                     local = tmp;
             }
             min = (min * 10) + local;
         }
-        for (int k = 1; k <= i; k++)
-        {
-            long power = (long)(pow(10, i - k));
+
+        for (int currentWeek = 1; currentWeek < weekDayNum; currentWeek++) {
+            long power = pow(10, weekDayNum - currentWeek - 1);
             long num = min / power;
-            System.out.print("Week " + weekIterator + " ");
+            System.out.print("Week " + currentWeek + " ");
             while (num > 0) {
                 System.out.print("=");
                 num--;
             }
             min %= power;
             System.out.println(">");
-            weekIterator++;
         }
     }
 }

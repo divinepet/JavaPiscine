@@ -1,4 +1,3 @@
-import java.util.Enumeration;
 import java.util.UUID;
 
 public class Transaction {

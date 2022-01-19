@@ -1,16 +1,15 @@
 import java.util.Scanner;
 
 public class Program {
+
     public static int isContains(char[] array, char c) {
-        for (int i = 0; i < array.length; i++)
-        {
+        for (int i = 0; i < array.length; i++) {
             if (array[i] == c)
-            {
                 return (i);
-            }
         }
         return (-1);
     }
+
     public static void sort(int[] array, char[] indexes)
     {
         int tmp;
@@ -31,6 +30,7 @@ public class Program {
             }
         }
     }
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         String str = sc.nextLine();
@@ -39,32 +39,27 @@ public class Program {
         int[] entryCount = new int[65535];
         int k = 0;
         int index = 0;
-        for (int i = 0; i < inputString.length; i++)
-        {
-            index = isContains(topSymbols, inputString[i]);
+        for (char c : inputString) {
+            index = isContains(topSymbols, c);
             if (index == -1) {
-                topSymbols[k] = inputString[i];
+                topSymbols[k] = c;
                 entryCount[k] += 1;
                 k++;
-            }
-            else
+            } else
                 entryCount[index] += 1;
         }
         sort(entryCount, topSymbols);
         int[] gridCount = new int[10];
         int max_entries = entryCount[0];
-        for (int i = 0; i < 10; i++)
-        {
+        for (int i = 0; i < 10; i++) {
             if (entryCount[i] > max_entries)
                 max_entries = entryCount[i];
         }
         for (int i = 0; i < gridCount.length; i++)
             gridCount[i] = (entryCount[i] * 10) / max_entries;
         int row = 11;
-        while (row > 0)
-        {
-            for (int i = 0; i < 10; i++)
-            {
+        while (row > 0) {
+            for (int i = 0; i < 10; i++) {
                 if (gridCount[i] + 1 == row)
                     System.out.print(entryCount[i]);
                 if (gridCount[i] >= row)

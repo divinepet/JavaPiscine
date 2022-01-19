@@ -1,11 +1,7 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class Main {
-
 
     public static double getSimilarity(String file1, String file2) throws IOException {
 
@@ -14,9 +10,9 @@ public class Main {
         String line2 = null;
 
         try {
-            reader = new BufferedReader(new FileReader(System.getenv("PWD") + "/" + file1));
+            reader = new BufferedReader(new FileReader(System.getenv("PWD") + "/" + file1), 10000000);
             line1 = reader.readLine();
-            reader = new BufferedReader(new FileReader(System.getenv("PWD") + "/" + file2));
+            reader = new BufferedReader(new FileReader(System.getenv("PWD") + "/" + file2), 10000000);
             line2 = reader.readLine();
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());

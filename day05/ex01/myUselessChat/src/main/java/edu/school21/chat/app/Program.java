@@ -13,9 +13,9 @@ import java.util.Scanner;
 public class Program {
     public static HikariDataSource dataSource() throws SQLException, IOException {
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("");
-        dataSource.setUsername("");
-        dataSource.setPassword("");
+        dataSource.setJdbcUrl("jdbc:postgresql://ec2-52-48-137-75.eu-west-1.compute.amazonaws.com:5432/d1omoeskafutir");
+        dataSource.setUsername("mstmeacrlarhsp");
+        dataSource.setPassword("7c592bc3cd6943da24a2f18c1c836503d29b44708497da31b99dfcb3dc86b7ba");
         dataSource.setDriverClassName("org.postgresql.Driver");
         Statement st = dataSource.getConnection().createStatement();
         st.execute(new String(Files.readAllBytes(Paths.get("./src/main/resources/schema.sql"))));

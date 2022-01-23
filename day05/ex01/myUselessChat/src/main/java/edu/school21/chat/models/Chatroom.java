@@ -3,12 +3,14 @@ package edu.school21.chat.models;
 import java.util.Objects;
 
 public class Chatroom {
-    private Long id;
-    private String name;
-    private Long ownerID;
+    private final int id;
+    private final String name;
+    private final User owner;
 
-    Chatroom (String name) {
+    public Chatroom (int id, String name, User owner) {
+        this.id = id;
         this.name = name;
+        this.owner = owner;
     }
 
     @Override
@@ -16,20 +18,20 @@ public class Chatroom {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Chatroom chatroom = (Chatroom) o;
-        return id == chatroom.id && ownerID == chatroom.ownerID && Objects.equals(name, chatroom.name);
+        return id == chatroom.id && owner == chatroom.owner && Objects.equals(name, chatroom.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, ownerID);
+        return Objects.hash(id, name, owner);
     }
 
     @Override
     public String toString() {
-        return "Chatroom{" +
+        return "{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", ownerID=" + ownerID +
+                ", owner=" + owner +
                 '}';
     }
 }

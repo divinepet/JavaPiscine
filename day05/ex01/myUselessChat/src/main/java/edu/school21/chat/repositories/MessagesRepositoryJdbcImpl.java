@@ -1,54 +1,60 @@
 package edu.school21.chat.repositories;
 
+import com.zaxxer.hikari.HikariDataSource;
+import edu.school21.chat.models.Chatroom;
 import edu.school21.chat.models.Message;
+import edu.school21.chat.models.User;
+import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Optional;
 
-public class MessagesRepositoryJdbcImpl implements MessagesRepository {
-    private final Statement statement;
+import static java.lang.String.format;
 
-    public MessagesRepositoryJdbcImpl(Statement statement) {
-        this.statement = statement;
+public class MessagesRepositoryJdbcImpl extends JdbcTemplate implements MessagesRepository {
+    public MessagesRepositoryJdbcImpl(HikariDataSource dataSource) {
+        super.setDataSource(dataSource);
     }
 
     @Override
-    public Optional<Message> findById(Long id) throws SQLException {
+    public Optional<Message> findById(int id) throws SQLException {
+        int userId = super.queryForObject("SELECT author FROM messages where id = " + id, Integer.class);
+        int chatroomId = super.queryForObject("SELECT chatroom FROM messages where id = " + id, Integer.class);
 
-        ResultSet rs = statement.executeQuery("SELECT * FROM messages where id = " + id);
-        String author = "";
-        String chatroom = "";
-        while (rs.next()) {
-            System.out.println("id=" + rs.getString("id") + ",");
-            author = rs.getString("authorid");
-            chatroom = rs.getString("chatroomID");
-            System.out.println("text=\"" + rs.getString("text") + "\",");
-            System.out.println("dateTime=" + rs.getString("dateTime") + ",");
-        }
-        if (author.equals("")) {
-            System.out.println("Message not found");
-            System.exit(1);
-        }
-        ResultSet authorrs = statement.executeQuery("SELECT * FROM users where id = " + author);
+        User author = super.queryForObject(format("SELECT * FROM users WHERE id = %d;", userId),
+                (ResultSet rs, int rowNum) ->
+                        new User(
+                                rs.getInt("id"),
+                                rs.getString("login"),
+                                rs.getString("password"))
+                );
 
-        while (authorrs.next()) {
-            System.out.print("author={");
-            System.out.print("id=" + authorrs.getString("id"));
-            System.out.print(",login=" + authorrs.getString("login"));
-            System.out.print(",password=" + authorrs.getString("password"));
-            System.out.print(",createdrooms=" + authorrs.getString("createdrooms"));
-            System.out.println(",socializedrooms=" + authorrs.getString("socializedrooms") + "},");
-        }
+        Chatroom chatroom = super.queryForObject(format("SELECT * FROM chatrooms WHERE id = %d;", chatroomId),
+                (ResultSet rs, int rowNum) ->
+                        new Chatroom(
+                                rs.getInt("id"),
+                                rs.getString("name"),
+                                super.queryForObject(format("SELECT * FROM users WHERE id = %d;", rs.getInt("owner")),
+                                (ResultSet rss, int rn) ->
+                                        new User(
+                                                rss.getInt("id"),
+                                                rss.getString("login"),
+                                                rss.getString("password"))
+                                )
+                        )
+        );
 
-        ResultSet chatroomrs = statement.executeQuery("SELECT * FROM chatrooms where id = " + chatroom);
-        while (chatroomrs.next()) {
-            System.out.print("chatroom={");
-            System.out.print("id=" + chatroomrs.getString("id"));
-            System.out.print(",name=" + chatroomrs.getString("name"));
-            System.out.println(",creator=" + chatroomrs.getString("ownerID") + "}");
-        }
-        return Optional.empty();
+        Message message = super.queryForObject(format("SELECT * FROM messages WHERE id = %d;", id),
+                (ResultSet rs, int rowNum) ->
+                        new Message(
+                                rs.getInt("id"),
+                                author,
+                                chatroom,
+                                rs.getString("text"),
+                                rs.getDate("datetime")
+                        )
+        );
+        System.out.println(message);
+        return Optional.ofNullable(message);
     }
 }
